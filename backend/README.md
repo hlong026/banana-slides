@@ -9,6 +9,7 @@
 - **AI服务**: Google Gemini API
 - **PPT处理**: python-pptx
 - **并发处理**: ThreadPoolExecutor
+- **包管理**: uv
 
 ## 项目结构
 
@@ -40,7 +41,6 @@ backend/
 │   └── validators.py        # 数据验证
 ├── instance/                 # 数据库文件目录（自动创建）
 ├── uploads/                  # 文件上传目录（自动创建）
-├── requirements.txt          # 依赖文件
 ├── .env.example             # 环境变量示例
 └── README.md                # 本文件
 ```
@@ -49,15 +49,14 @@ backend/
 
 ### 1. 安装依赖
 
+本项目使用 [uv](https://github.com/astral-sh/uv) 管理 Python 依赖。所有依赖定义在项目根目录的 `pyproject.toml` 文件中。
+
+在项目根目录下运行：
 ```bash
-cd backend
-
-# 使用 pip
-pip install -r requirements.txt
-
-# 或使用 uv
-uv pip install -r requirements.txt
+uv sync
 ```
+
+这将自动安装所有必需的依赖包。
 
 ### 2. 配置环境变量
 
@@ -76,10 +75,11 @@ GOOGLE_API_BASE=https://generativelanguage.googleapis.com
 
 ### 3. 运行服务
 
+使用 uv 运行：
 ```bash
-python app.py
+cd backend
+uv run python app.py
 ```
-
 服务将在 `http://localhost:5000` 启动。
 
 ## API文档
@@ -230,42 +230,6 @@ class ExportService:
         pass
 ```
 
-## 部署说明
-
-### 生产环境部署
-
-1. **使用 Gunicorn**
-
-```bash
-pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 app:app
-```
-
-2. **使用 Docker**
-
-创建 `Dockerfile`：
-
-```dockerfile
-FROM python:3.10-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-COPY . .
-
-EXPOSE 5000
-
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
-```
-
-3. **环境变量配置**
-
-生产环境必须配置：
-- `FLASK_ENV=production`
-- `SECRET_KEY=随机生成的密钥`
-- `GOOGLE_API_KEY=你的API密钥`
 
 ## 测试
 

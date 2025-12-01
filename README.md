@@ -123,8 +123,7 @@ banana-slides/
 │   ├── models/          # 数据模型
 │   ├── services/        # 业务逻辑
 │   ├── controllers/     # API控制器
-│   ├── utils/           # 工具函数
-│   └── requirements.txt
+│   └── utils/           # 工具函数
 │
 └── docs/                # 文档
     ├── PRD.md
@@ -136,27 +135,25 @@ banana-slides/
 
 ### 环境要求
 - Python 3.10 或更高版本
+- [uv](https://github.com/astral-sh/uv) - Python 包管理器
 - Node.js 16+ 和 npm
 - 有效的 Google Gemini API 密钥
 
 ### 后端安装
 
-1. **进入后端目录**
+1. **安装 uv（如果尚未安装）**
 ```bash
-cd backend
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 2. **安装依赖**
 
-使用 pip：
+在项目根目录下运行：
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
-或使用 uv（推荐）：
-```bash
-uv pip install -r requirements.txt
-```
+这将根据 `pyproject.toml` 自动安装所有依赖。
 
 3. **配置环境变量**
 
@@ -194,7 +191,7 @@ npm install
 
 ```bash
 cd backend
-python app.py
+uv run python app.py
 ```
 
 后端服务将在 `http://localhost:5000` 启动。
@@ -244,6 +241,126 @@ curl -X POST http://localhost:5000/api/projects \
 ```
 
 完整的API测试流程请参考 [快速启动指南](快速启动指南.md)。
+
+## 🐳 Docker 部署
+
+### 使用 Docker Compose（推荐）
+
+这是最简单的部署方式，可以一键启动前后端服务。
+
+1. **配置环境变量**
+
+创建 `.env` 文件（参考 `env.example`）：
+```bash
+cp env.example .env
+```
+
+编辑 `.env` 文件，配置必要的环境变量：
+```env
+GOOGLE_API_KEY=your-google-api-key-here
+GOOGLE_API_BASE=https://generativelanguage.googleapis.com
+SECRET_KEY=your-secret-key-change-this-in-production
+CORS_ORIGINS=http://localhost:80,http://localhost:3000
+```
+
+2. **启动服务**
+
+```bash
+docker-compose up -d
+```
+
+3. **访问应用**
+
+- 前端：http://localhost:3000
+- 后端 API：http://localhost:5000
+- 健康检查：http://localhost:5000/health
+
+4. **查看日志**
+
+```bash
+# 查看所有服务日志
+docker-compose logs -f
+
+# 查看后端日志
+docker-compose logs -f backend
+
+# 查看前端日志
+docker-compose logs -f frontend
+```
+
+5. **停止服务**
+
+```bash
+docker-compose down
+```
+
+### 单独构建和运行
+
+#### 构建后端镜像
+
+```bash
+docker build -f backend/Dockerfile -t banana-slides-backend .
+```
+
+#### 运行后端容器
+
+```bash
+docker run -d \
+  --name banana-slides-backend \
+  -p 5000:5000 \
+  -e GOOGLE_API_KEY=your-api-key \
+  -e GOOGLE_API_BASE=https://generativelanguage.googleapis.com \
+  -v $(pwd)/backend/instance:/app/backend/instance \
+  -v $(pwd)/uploads:/app/uploads \
+  banana-slides-backend
+```
+
+#### 构建前端镜像
+
+```bash
+docker build -f frontend/Dockerfile -t banana-slides-frontend .
+```
+
+#### 运行前端容器
+
+```bash
+docker run -d \
+  --name banana-slides-frontend \
+  -p 3000:80 \
+  --link banana-slides-backend:backend \
+  banana-slides-frontend
+```
+
+### Docker 配置说明
+
+- **数据持久化**：数据库文件和上传的文件通过 Docker volumes 持久化到宿主机
+- **健康检查**：后端服务包含健康检查，确保服务正常运行
+- **网络隔离**：前后端通过 Docker 网络通信，前端通过 nginx 代理后端 API
+- **环境变量**：所有配置通过环境变量传递，便于不同环境部署
+
+### 生产环境建议
+
+1. **使用 Gunicorn**：在生产环境中，建议使用 Gunicorn 替代 Flask 开发服务器
+
+修改 `backend/Dockerfile` 的 CMD：
+```dockerfile
+CMD ["uv", "run", "--directory", "backend", "gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+```
+
+2. **HTTPS 支持**：配置 nginx SSL 证书，启用 HTTPS
+
+3. **资源限制**：在 `docker-compose.yml` 中添加资源限制：
+```yaml
+services:
+  backend:
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+```
+
+4. **备份策略**：定期备份 `backend/instance` 和 `uploads` 目录
 
 ## 📁 项目结构
 
@@ -309,8 +426,10 @@ banana-slides/
 │
 ├── demo.py                     # 原始demo（已集成到后端）
 ├── gemini_genai.py             # Gemini API封装（已集成）
-├── pyproject.toml              # Python项目配置
-├── uv.lock                     # uv依赖锁定
+├── pyproject.toml              # Python项目配置（使用 uv 管理依赖）
+├── uv.lock                     # uv依赖锁定文件
+├── docker-compose.yml          # Docker Compose 配置
+├── .dockerignore               # Docker 忽略文件
 ├── LICENSE                     # MIT许可证
 └── README.md                   # 本文件
 ```
