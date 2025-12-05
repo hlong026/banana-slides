@@ -31,7 +31,7 @@
 
 
 ## ✨ 项目缘起
-本人不擅长PPT制作，每次做PPT都需要花费大量时间在ppt样式调整和排版上。使用过传统的AI PPT app，虽然能快速产出ppt，但是还存在以下问题：
+我经常有快速做一版ppt的需求，并且想要它尽可能有设计感、不同质化，但ppt页面的设计、美化，却让人十分头痛。使用过传统的AI PPT app，虽然能快速产出ppt，但是还存在以下问题：
 - 1️⃣只能选择预设模版，无法灵活调整风格
 - 2️⃣自由度低，多轮改动难以进行 
 - 3️⃣成品观感相似，同质化严重
@@ -51,8 +51,8 @@
 |:---:|:---:|
 | <img src="https://github.com/user-attachments/assets/1a63afc9-ad05-4755-8480-fc4aa64987f1" width="500" alt="案例1"> | <img src="https://github.com/user-attachments/assets/c64cd952-2cdf-4a92-8c34-0322cbf3de4e" width="500" alt="案例2"> |
 | **钱的演变：从贝壳到纸币的旅程** | **DeepSeek-V3.2技术展示** |
-| <img src="https://github.com/user-attachments/assets/d1e15604-767c-42f8-bb41-a2568f18bc2b" width="500" alt="案例3"> | <img src="https://github.com/user-attachments/assets/d1e19152-afc8-4d08-ac90-518fa8bc788e" width="500" alt="案例4"> |
-| **人类对生态环境的影响** | **卷积神经网络介绍** |
+| <img src="https://github.com/user-attachments/assets/d1e15604-767c-42f8-bb41-a2568f18bc2b" width="500" alt="案例3"> | <img src="https://github.com/user-attachments/assets/383eb011-a167-4343-99eb-e1d0568830c7" width="500" alt="案例4"> |
+| **人类对生态环境的影响** | **预制菜智能产线装备研发和产业化** |
 
 </div>
 
