@@ -19,11 +19,6 @@ if not exist "node_modules\" (
 
 echo.
 echo [2/3] 检查环境变量...
-if not exist ".env.local" (
-    echo 创建默认环境变量文件...
-    echo VITE_API_BASE_URL=http://localhost:5000 > .env.local
-)
-
 echo.
 echo [3/3] 启动开发服务器...
 echo 前端将运行在 http://localhost:3000
