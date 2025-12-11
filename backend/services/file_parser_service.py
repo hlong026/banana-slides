@@ -13,7 +13,11 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from google import genai
 from google.genai import types
 from PIL import Image
-from markitdown import MarkItDown
+try:
+    from markitdown import MarkItDown
+except ImportError:
+    MarkItDown = None
+    logging.warning("markitdown not available, spreadsheet parsing will be disabled")
 
 logger = logging.getLogger(__name__)
 
